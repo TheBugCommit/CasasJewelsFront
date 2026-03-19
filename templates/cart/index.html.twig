@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}El meu carretó - Casas Jewels{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('frontend_catalog') }}">Inici</a></li>
+                <li class="breadcrumb-item active" aria-current="page">El meu carretó</li>
+            </ol>
+        </nav>
+
+        <h1 class="mb-4 fw-bold">🛒 El meu carretó</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tancar"></button>
+            </div>
+        {% endfor %}
+
+        {% if items is empty %}
+            <div class="alert alert-info bg-white border shadow-sm p-5 text-center mt-4">
+                <h4 class="mb-3">El teu carretó està buit.</h4>
+                <p class="text-muted mb-4">Sembla que encara no has afegit cap joia a la teva cistella.</p>
+                <a href="{{ path('frontend_catalog') }}" class="btn btn-brand px-4 py-2">Descobrir el catàleg</a>
+            </div>
+        {% else %}
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th class="ps-4 py-3">Producte</th>
+                                <th>Preu Unitari</th>
+                                <th class="text-center">Quantitat</th>
+                                <th>Subtotal</th>
+                                <th class="text-end pe-4">Accions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in items %}
+                                <tr>
+                                    <td class="ps-4 py-3">
+                                        <span class="fs-4 me-3">💎</span>
+                                        <strong class="fs-5">{{ item.product.name }}</strong>
+                                    </td>
+                                    <td class="text-muted">{{ item.product.price|number_format(2, ',', '.') }} €</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border px-3 py-2 fs-6">{{ item.quantity }}</span>
+                                    </td>
+                                    <td class="text-brand fw-bold fs-5">
+                                        {{ item.subtotal|number_format(2, ',', '.') }} €
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <form action="{{ path('frontend_cart_remove', { id: item.product.id }) }}" method="POST">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger px-3">
+                                                🗑️ Eliminar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot class="bg-light">
+                            <tr>
+                                <td colspan="3" class="text-end fw-bold fs-4 py-3">TOTAL A PAGAR:</td>
+                                <td colspan="2" class="fw-bold fs-3 text-brand ps-2 py-3">
+                                    {{ total|number_format(2, ',', '.') }} €
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-4 mb-5">
+                <a href="{{ path('frontend_catalog') }}" class="btn btn-outline-secondary px-4 py-2">
+                    &laquo; Seguir comprant
+                </a>
+
+                <a href="{{ path('frontend_checkout_index') }}" class="btn btn-success px-5 py-3 fw-bold fs-5 shadow">
+                    Tramitar Comanda &raquo;
+                </a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
