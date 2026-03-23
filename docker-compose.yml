@@ -1,0 +1,16 @@
+services:
+    frontend:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+        ports:
+            - "80:80"
+        volumes:
+            - ./:/var/www/html
+            - ../CasasJewelsVendor:/var/www/CasasJewelsVendor
+        networks:
+            - shared_api_network
+
+networks:
+    shared_api_network:
+        external: true
