@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pàgina no trobada (404) - Casas Jewels{% endblock %}
+
+{% block body %}
+    <div class="container error-wrapper">
+        <div class="row w-100 justify-content-center">
+            <div class="col-md-8 col-lg-6 text-center">
+                <div class="card shadow-sm border-0 bg-white p-5 rounded-4">
+
+                    <div class="error-icon">🧭</div>
+
+                    <h1 class="display-2 error-title text-brand mb-2">404</h1>
+                    <h2 class="h3 fw-bold text-dark mb-3">Ups! Ens hem perdut.</h2>
+
+                    <p class="text-muted fs-5 mb-4">
+                        La pàgina que busques no existeix, ha canviat de nom o està temporalment no disponible.
+                    </p>
+
+                    <div>
+                        <a href="{{ path('frontend_catalog') }}" class="btn btn-brand btn-lg px-5 shadow-sm fw-bold">
+                            &laquo; Tornar al Catàleg
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

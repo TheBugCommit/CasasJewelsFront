@@ -34,3 +34,23 @@ main {
 .breadcrumb a:hover {
     text-decoration: underline;
 }
+
+.error-wrapper {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 0;
+}
+
+.error-icon {
+    font-size: 6rem;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+}
+
+.error-title {
+    font-weight: 800;
+    letter-spacing: -0.05em;
+}

@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Sce\CasasJewelsVendor\DTO\ErrorResponseDTO;
-use Sce\CasasJewelsVendor\DTO\Requests\QueryProducts\GetProductDetailRequestDTO;
-use Sce\CasasJewelsVendor\Repository\ProductRepository;
+use App\Service\CartSessionService;
+use App\UseCase\Cart\GetCartSummaryUseCase;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -17,41 +15,18 @@ use Symfony\Component\Routing\Attribute\Route;
 class CartController extends AbstractController
 {
     public function __construct(
-        private readonly ProductRepository $vendorProductRepository,
-        private readonly RequestStack $requestStack
+        private readonly GetCartSummaryUseCase $getCartSummary,
+        private readonly CartSessionService $cartSession
     ) {}
 
-    // 1. Ver el carrito
     #[Route('', name: 'frontend_cart_index', methods: ['GET'])]
     public function index(): Response
     {
-        $session = $this->requestStack->getSession();
-        $cart = $session->get('cart', []);
-
-        $cartItems = [];
-        $total = 0;
-
-        // Recorremos los IDs guardados en sesión y pedimos los detalles a tu Vendor API
-        foreach ($cart as $productId => $quantity) {
-            $requestDTO = new GetProductDetailRequestDTO($productId);
-            $responseDTO = $this->vendorProductRepository->getProductDetail($requestDTO);
-
-            if (!$responseDTO instanceof ErrorResponseDTO) {
-                $product = $responseDTO->data;
-                $subtotal = $product->price * $quantity;
-                $total += $subtotal;
-
-                $cartItems[] = [
-                    'product'  => $product,
-                    'quantity' => $quantity,
-                    'subtotal' => $subtotal
-                ];
-            }
-        }
+        $summary = $this->getCartSummary->execute();
 
         return $this->render('cart/index.html.twig', [
-            'items' => $cartItems,
-            'total' => $total,
+            'items' => $summary['items'],
+            'total' => $summary['total'],
         ]);
     }
 
@@ -61,18 +36,8 @@ class CartController extends AbstractController
         $productId = $request->request->get('product_id');
         $quantity = (int) $request->request->get('quantity', 1);
 
-        $session = $this->requestStack->getSession();
-        $cart = $session->get('cart', []);
-
-        if (isset($cart[$productId])) {
-            $cart[$productId] += $quantity;
-        } else {
-            $cart[$productId] = $quantity;
-        }
-
-        $session->set('cart', $cart);
-
-        $this->addFlash('success', 'Producto añadido al carrito correctamente.');
+        $this->cartSession->addItem($productId, $quantity);
+        $this->addFlash('success', 'Producte afegit al carretó correctament.');
 
         return $this->redirectToRoute('frontend_cart_index');
     }
@@ -80,14 +45,8 @@ class CartController extends AbstractController
     #[Route('/remove/{id}', name: 'frontend_cart_remove', methods: ['POST'])]
     public function remove(string $id): Response
     {
-        $session = $this->requestStack->getSession();
-        $cart = $session->get('cart', []);
-
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-            $session->set('cart', $cart);
-            $this->addFlash('success', 'Producto eliminado del carrito.');
-        }
+        $this->cartSession->removeItem($id);
+        $this->addFlash('success', 'Producte eliminat del carretó.');
 
         return $this->redirectToRoute('frontend_cart_index');
     }

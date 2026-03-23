@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}S'ha produït un error - Casas Jewels{% endblock %}
+
+{% block body %}
+    <div class="container error-wrapper">
+        <div class="row w-100 justify-content-center">
+            <div class="col-md-8 col-lg-6 text-center">
+                <div class="card shadow-sm border-0 bg-white p-5 rounded-4">
+
+                    <div class="error-icon">🛠️</div>
+
+                    <h1 class="display-4 error-title text-danger mb-2">Error intern</h1>
+                    <h2 class="h4 fw-bold text-dark mb-3">Alguna cosa no ha anat com esperàvem.</h2>
+
+                    <p class="text-muted fs-5 mb-4">
+                        El nostre servidor ha tingut un problema intentant processar la teva petició. L'equip tècnic ja ha estat notificat i estem treballant per solucionar-ho el més aviat possible.
+                    </p>
+
+                    <div>
+                        <a href="{{ path('frontend_catalog') }}" class="btn btn-brand btn-lg px-5 shadow-sm fw-bold">
+                            &laquo; Tornar a l'inici
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
