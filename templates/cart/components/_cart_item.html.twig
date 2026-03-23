@@ -1,0 +1,20 @@
+<tr>
+    <td class="ps-4 py-3">
+        <span class="fs-4 me-3">💎</span>
+        <strong class="fs-5">{{ item.product.name }}</strong>
+    </td>
+    <td class="text-muted">{{ item.product.price|number_format(2, ',', '.') }} €</td>
+    <td class="text-center">
+        <span class="badge bg-light text-dark border px-3 py-2 fs-6">{{ item.quantity }}</span>
+    </td>
+    <td class="text-brand fw-bold fs-5">
+        {{ item.subtotal|number_format(2, ',', '.') }} €
+    </td>
+    <td class="text-end pe-4">
+        <form action="{{ path('frontend_cart_remove', { id: item.product.id }) }}" method="POST">
+            <button type="submit" class="btn btn-sm btn-outline-danger px-3">
+                🗑️ Eliminar
+            </button>
+        </form>
+    </td>
+</tr>

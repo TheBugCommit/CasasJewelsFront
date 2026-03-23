@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Exception\CheckoutProcessException;
 use App\UseCase\Cart\GetCartSummaryUseCase;
 use App\UseCase\Checkout\ProcessCheckoutUseCase;
 use Sce\CasasJewelsVendor\DTO\ErrorResponseDTO;
@@ -40,10 +41,10 @@ class CheckoutController extends AbstractController
         $clientName = $request->request->get('clientName');
         $clientEmail = $request->request->get('clientEmail');
 
-        $result = $this->processCheckout->execute($clientName, $clientEmail);
-
-        if ($result instanceof ErrorResponseDTO) {
-            $this->addFlash('error', 'Error en tramitar la comanda: ' . $result->message);
+        try {
+            $result = $this->processCheckout->execute($clientName, $clientEmail);
+        } catch (CheckoutProcessException $e) {
+            $this->addFlash('error', 'Error en tramitar la comanda: ' . $e->getMessage());
             return $this->redirectToRoute('frontend_checkout_index');
         }
 

@@ -13,41 +13,10 @@
         </nav>
 
         <div class="row mt-2">
-            <div class="col-md-6 mb-4">
-                <div class="bg-white d-flex justify-content-center align-items-center rounded shadow-sm border" style="height: 450px; font-size: 10rem;">
-                    💎
-                </div>
-            </div>
+            {% include 'catalog/components/_product_image.html.twig' %}
 
-            <div class="col-md-6 px-lg-5">
-                <h1 class="display-5 fw-bold mb-3">{{ product.name }}</h1>
-                <p class="fs-1 text-brand fw-bold mb-4">{{ product.price|number_format(2, ',', '.') }} €</p>
-
-                <h5 class="fw-bold mt-4">Descripció</h5>
-                <p class="text-muted fs-5" style="line-height: 1.6;">{{ product.description }}</p>
-
-                <ul class="list-unstyled mt-4 mb-5 text-muted">
-                    <li class="mb-2"><small>📦 <strong>Temps de lliurament:</strong> 24/48 hores a domicili</small></li>
-                    <li><small>🛡️ <strong>Garantia oficial:</strong> 2 anys inclosos</small></li>
-                </ul>
-
-                <div class="card border-0 shadow-sm bg-light">
-                    <div class="card-body p-4">
-                        <form action="{{ path('frontend_cart_add') }}" method="POST" class="d-flex align-items-center">
-                            <input type="hidden" name="product_id" value="{{ product.id }}">
-
-                            <div class="me-3">
-                                <label for="quantity" class="form-label fw-bold mb-1 small text-muted">Quantitat</label>
-                                <input type="number" id="quantity" name="quantity" value="1" min="1" max="10" class="form-control form-control-lg text-center" style="width: 90px;">
-                            </div>
-
-                            <button type="submit" class="btn btn-brand btn-lg w-100 mt-3 shadow-sm fw-bold">
-                                🛒 Afegir al carretó
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            {% include 'catalog/components/_product_info.html.twig' %}
         </div>
+
     </div>
 {% endblock %}

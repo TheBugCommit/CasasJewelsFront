@@ -1,0 +1,21 @@
+{% if totalPages > 1 %}
+    <nav aria-label="Paginació de productes" class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item {% if currentPage <= 1 %}disabled{% endif %}">
+                <a class="page-link" href="{{ currentPage > 1 ? path('frontend_catalog', { page: currentPage - 1, limit: limit }) : '#' }}">
+                    &laquo; Anterior
+                </a>
+            </li>
+            {% for i in 1..totalPages %}
+                <li class="page-item {% if currentPage == i %}active{% endif %}">
+                    <a class="page-link" href="{{ path('frontend_catalog', { page: i, limit: limit }) }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+            <li class="page-item {% if currentPage >= totalPages %}disabled{% endif %}">
+                <a class="page-link" href="{{ currentPage < totalPages ? path('frontend_catalog', { page: currentPage + 1, limit: limit }) : '#' }}">
+                    Següent &raquo;
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endif %}

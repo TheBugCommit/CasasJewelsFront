@@ -1,0 +1,31 @@
+<div class="col-md-5 col-lg-4">
+    <div class="card shadow-sm border-0 bg-white">
+        <div class="card-body p-4">
+            <h5 class="fw-bold mb-4 border-bottom pb-3">Resum de la Comanda</h5>
+
+            <div class="d-flex justify-content-between mb-3 text-muted">
+                <span>Subtotal dels articles</span>
+                <span>{{ total|number_format(2, ',', '.') }} €</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3 text-success fw-bold">
+                <span>Cost d'enviament</span>
+                <span>Gratuït</span>
+            </div>
+            <div class="d-flex justify-content-between mb-4 text-muted">
+                <span>Impostos (IVA inclòs)</span>
+                <span>Ja inclosos</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center border-top pt-4 fw-bold fs-4">
+                <span>Total</span>
+                <span class="text-brand">{{ total|number_format(2, ',', '.') }} €</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <a href="{{ path('frontend_cart_index') }}" class="text-muted text-decoration-none small">
+            &laquo; Modificar la meva cistella
+        </a>
+    </div>
+</div>

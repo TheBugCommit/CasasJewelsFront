@@ -2,6 +2,7 @@
 
 namespace App\UseCase\Catalog;
 
+use App\Exception\CatalogFetchException;
 use Sce\CasasJewelsVendor\DTO\Requests\QueryProducts\GetProductListRequestDTO;
 use Sce\CasasJewelsVendor\DTO\ErrorResponseDTO;
 use Sce\CasasJewelsVendor\Repository\ProductRepository;
@@ -12,7 +13,7 @@ class GetCatalogListUseCase
 
     /**
      * @return array{items: array, totalPages: int, total: int}
-     * @throws \RuntimeException
+     * @throws CatalogFetchException
      */
     public function execute(int $limit, int $page): array
     {
@@ -20,7 +21,7 @@ class GetCatalogListUseCase
         $responseDTO = $this->vendorProductRepository->getProductList($requestDTO);
 
         if ($responseDTO instanceof ErrorResponseDTO) {
-            throw new \RuntimeException('No hem pogut carregar el catàleg: ' . $responseDTO->message);
+            throw new CatalogFetchException('No hem pogut carregar el catàleg: ' . $responseDTO->message);
         }
 
         return [

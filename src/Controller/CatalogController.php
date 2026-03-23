@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Exception\CatalogFetchException;
 use App\UseCase\Catalog\GetCatalogListUseCase;
 use App\UseCase\Catalog\GetProductDetailUseCase;
-use Sce\CasasJewelsVendor\DTO\ErrorResponseDTO;
-use Sce\CasasJewelsVendor\DTO\Requests\QueryProducts\GetProductDetailRequestDTO;
-use Sce\CasasJewelsVendor\DTO\Requests\QueryProducts\GetProductListRequestDTO;
-use Sce\CasasJewelsVendor\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,7 +31,7 @@ class CatalogController extends AbstractController
             $products = $data['items'];
             $totalPages = $data['totalPages'];
 
-        } catch (\RuntimeException $e) {
+        } catch (CatalogFetchException $e) {
             $this->addFlash('error', $e->getMessage());
             $products = [];
             $totalPages = 1;

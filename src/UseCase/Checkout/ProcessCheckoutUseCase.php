@@ -2,6 +2,7 @@
 
 namespace App\UseCase\Checkout;
 
+use App\Exception\CheckoutProcessException;
 use App\Service\CartSessionService;
 use Sce\CasasJewelsVendor\DTO\Requests\CreateOrder\CreateOrderRequestDTO;
 use Sce\CasasJewelsVendor\DTO\Requests\CreateOrder\OrderLineRequestDTO;
@@ -15,12 +16,15 @@ class ProcessCheckoutUseCase
         private readonly OrderRepository $vendorOrderRepository
     ) {}
 
-    public function execute(string $clientName, string $clientEmail): string|ErrorResponseDTO
+    /**
+     * @throws CheckoutProcessException
+     */
+    public function execute(string $clientName, string $clientEmail): string
     {
         $cart = $this->cartSession->getCart();
 
         if (empty($cart)) {
-            return new ErrorResponseDTO(400, 'El carretó està buit.');
+            throw new CheckoutProcessException('El carretó està buit.');
         }
 
         $lines = [];
@@ -32,7 +36,7 @@ class ProcessCheckoutUseCase
         $response = $this->vendorOrderRepository->createOrder($orderRequest);
 
         if ($response instanceof ErrorResponseDTO) {
-            return $response;
+            throw new CheckoutProcessException($response->message);
         }
 
         $this->cartSession->clear();

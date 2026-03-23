@@ -1,0 +1,30 @@
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th class="ps-4 py-3">Producte</th>
+                    <th>Preu Unitari</th>
+                    <th class="text-center">Quantitat</th>
+                    <th>Subtotal</th>
+                    <th class="text-end pe-4">Accions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    {% include 'cart/components/_cart_item.html.twig' %}
+                {% endfor %}
+                </tbody>
+                <tfoot class="bg-light">
+                    <tr>
+                        <td colspan="3" class="text-end fw-bold fs-4 py-3">TOTAL A PAGAR:</td>
+                        <td colspan="2" class="fw-bold fs-3 text-brand ps-2 py-3">
+                            {{ total|number_format(2, ',', '.') }} €
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

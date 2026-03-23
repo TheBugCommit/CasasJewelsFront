@@ -1,0 +1,11 @@
+<div class="d-flex justify-content-end align-items-center mb-4">
+    <label for="limitSelect" class="small fw-bold text-muted me-2 mb-0">Productes per pàgina:</label>
+    <select id="limitSelect" class="form-select form-select-sm w-auto cursor-pointer catalog-limit-select">
+        {% for limitOption in [2, 24, 48, 96] %}
+            <option value="{{ path('frontend_catalog', { limit: limitOption, page: 1 }) }}"
+                    {% if limit == limitOption %}selected{% endif %}>
+                {{ limitOption }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
