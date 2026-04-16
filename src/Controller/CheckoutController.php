@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\Exception\CheckoutProcessException;
 use App\UseCase\Cart\GetCartSummaryUseCase;
 use App\UseCase\Checkout\ProcessCheckoutUseCase;
-use Sce\CasasJewelsVendor\DTO\ErrorResponseDTO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

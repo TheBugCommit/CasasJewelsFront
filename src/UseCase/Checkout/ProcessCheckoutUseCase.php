@@ -39,8 +39,6 @@ class ProcessCheckoutUseCase
             throw new CheckoutProcessException($response->message);
         }
 
-        $this->cartSession->clear();
-
         return $response->paymentUrl;
     }
 }
