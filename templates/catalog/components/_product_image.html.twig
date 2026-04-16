@@ -1,5 +1,9 @@
 <div class="col-md-6 mb-4">
-    <div class="bg-white d-flex justify-content-center align-items-center rounded shadow-sm border" style="height: 450px; font-size: 10rem;">
-        💎
+    <div class="bg-white d-flex justify-content-center align-items-center rounded shadow-sm border" style="height: 450px;">
+        {% if product.imageUrl %}
+            <img src="{{ backend_url ~ product.imageUrl }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-height: 430px; object-fit: contain;">
+        {% else %}
+            <span style="font-size: 10rem;">💎</span>
+        {% endif %}
     </div>
 </div>

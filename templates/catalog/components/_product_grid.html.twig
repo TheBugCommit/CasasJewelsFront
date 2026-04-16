@@ -2,8 +2,15 @@
     {% for product in products %}
         <div class="col">
             <div class="card h-100 shadow-sm border-0 transition-hover">
-                <div class="bg-light p-5 text-center rounded-top" style="font-size: 4rem;">💎</div>
+                <div class="bg-light text-center rounded-top" style="height: 200px; overflow: hidden;">
+                    {% if product.imageUrl %}
+                        <img src="{{ backend_url ~ product.imageUrl }}" alt="{{ product.name }}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% else %}
+                        <div class="d-flex justify-content-center align-items-center h-100" style="font-size: 4rem;">💎</div>
+                    {% endif %}
+                </div>
                 <div class="card-body d-flex flex-column text-center">
+                    <span class="badge bg-secondary mb-2 align-self-center">{{ product.category }}</span>
                     <h5 class="card-title fw-bold">{{ product.name }}</h5>
                     <p class="card-text text-brand fw-bold fs-4 mb-3">{{ product.price|number_format(2, ',', '.') }} €</p>
 

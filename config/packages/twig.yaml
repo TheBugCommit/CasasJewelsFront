@@ -1,5 +1,7 @@
 twig:
     file_name_pattern: '*.twig'
+    globals:
+        backend_url: '%env(BACKEND_URL)%'
 
 when@test:
     twig:
