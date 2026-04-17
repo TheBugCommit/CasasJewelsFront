@@ -22,18 +22,18 @@ class CatalogController extends AbstractController
     #[Route('/', name: 'frontend_catalog', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        $limit = $request->query->getInt('limit', 12);
-        $page = $request->query->getInt('page', 1);
+        $page  = max(1, $request->query->getInt('page', 1));
+        $limit = max(1, min($request->query->getInt('limit', 12), 48));
 
         try {
-            $data = $this->getCatalogList->execute($limit, $page);
+            $responseDTO = $this->getCatalogList->execute($limit, $page);
 
-            $products = $data['items'];
-            $totalPages = $data['totalPages'];
+            $products   = $responseDTO->items;
+            $totalPages = $responseDTO->totalPages;
 
         } catch (CatalogFetchException $e) {
             $this->addFlash('error', $e->getMessage());
-            $products = [];
+            $products   = [];
             $totalPages = 1;
         }
 

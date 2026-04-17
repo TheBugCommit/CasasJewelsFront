@@ -3,7 +3,7 @@
 namespace App\UseCase\Checkout;
 
 use App\Exception\CheckoutProcessException;
-use App\Service\CartSessionService;
+use App\UseCase\Cart\GetCartSummaryUseCase;
 use Sce\CasasJewelsVendor\DTO\Requests\CreateOrder\CreateOrderRequestDTO;
 use Sce\CasasJewelsVendor\DTO\Requests\CreateOrder\OrderLineRequestDTO;
 use Sce\CasasJewelsVendor\DTO\ErrorResponseDTO;
@@ -12,8 +12,8 @@ use Sce\CasasJewelsVendor\Repository\OrderRepository;
 class ProcessCheckoutUseCase
 {
     public function __construct(
-        private readonly CartSessionService $cartSession,
-        private readonly OrderRepository $vendorOrderRepository
+        private readonly GetCartSummaryUseCase $getCartSummary,
+        private readonly OrderRepository       $vendorOrderRepository
     ) {}
 
     /**
@@ -21,15 +21,18 @@ class ProcessCheckoutUseCase
      */
     public function execute(string $clientName, string $clientEmail): string
     {
-        $cart = $this->cartSession->getCart();
+        $summary = $this->getCartSummary->execute();
 
-        if (empty($cart)) {
-            throw new CheckoutProcessException('El carretó està buit.');
+        if (empty($summary->items)) {
+            throw new CheckoutProcessException('El carretó està buit o els productes ja no estan disponibles.');
         }
 
         $lines = [];
-        foreach ($cart as $productId => $quantity) {
-            $lines[] = new OrderLineRequestDTO($productId, $quantity);
+        foreach ($summary->items as $item) {
+            $lines[] = new OrderLineRequestDTO(
+                productId: $item->product->id,
+                quantity:  $item->quantity
+            );
         }
 
         $orderRequest = new CreateOrderRequestDTO($clientName, $clientEmail, $lines);

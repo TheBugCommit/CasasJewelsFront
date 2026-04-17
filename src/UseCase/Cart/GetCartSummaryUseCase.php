@@ -2,10 +2,12 @@
 
 namespace App\UseCase\Cart;
 
+use App\Model\CartItem;
+use App\Model\CartSummary;
 use App\Service\CartSessionService;
-use Sce\CasasJewelsVendor\DTO\Requests\QueryProducts\GetProductDetailRequestDTO;
-use Sce\CasasJewelsVendor\DTO\ErrorResponseDTO;
+use Sce\CasasJewelsVendor\DTO\Requests\QueryProducts\GetProductsByIdsRequestDTO;
 use Sce\CasasJewelsVendor\Repository\ProductRepository;
+use Sce\CasasJewelsVendor\DTO\ErrorResponseDTO;
 
 class GetCartSummaryUseCase
 {
@@ -14,35 +16,36 @@ class GetCartSummaryUseCase
         private readonly ProductRepository $vendorProductRepository
     ) {}
 
-    /**
-     * @return array{items: array, total: float}
-     */
-    public function execute(): array
+    public function execute(): CartSummary
     {
         $cart = $this->cartSession->getCart();
+
+        if (empty($cart)) {
+            return new CartSummary([]);
+        }
+        $productIds = array_keys($cart);
+        $request = new GetProductsByIdsRequestDTO($productIds);
+        $response = $this->vendorProductRepository->getProductsByIds($request);
+
+        if ($response instanceof ErrorResponseDTO || empty($response->items)) {
+            return new CartSummary([]);
+        }
+
+        $productsById = [];
+        foreach ($response->items as $productDTO) {
+            $productsById[$productDTO->id] = $productDTO;
+        }
+
         $cartItems = [];
-        $total = 0.0;
-
         foreach ($cart as $productId => $quantity) {
-            $requestDTO = new GetProductDetailRequestDTO($productId);
-            $responseDTO = $this->vendorProductRepository->getProductDetail($requestDTO);
-
-            if (!$responseDTO instanceof ErrorResponseDTO) {
-                $product = $responseDTO->data;
-                $subtotal = $product->price * $quantity;
-                $total += $subtotal;
-
-                $cartItems[] = [
-                    'product'  => $product,
-                    'quantity' => $quantity,
-                    'subtotal' => $subtotal
-                ];
+            if (isset($productsById[$productId])) {
+                $cartItems[] = new CartItem(
+                    product: $productsById[$productId],
+                    quantity: $quantity
+                );
             }
         }
 
-        return [
-            'items' => $cartItems,
-            'total' => $total,
-        ];
+        return new CartSummary($cartItems);
     }
 }

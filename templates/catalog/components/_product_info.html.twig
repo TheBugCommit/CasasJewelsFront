@@ -7,7 +7,8 @@
     <p class="text-muted fs-5" style="line-height: 1.6;">{{ product.description }}</p>
 
     <ul class="list-unstyled mt-4 mb-5 text-muted">
-        <li class="mb-2"><small>📦 <strong>Temps de lliurament:</strong> 24/48 hores a domicili</small></li>
+        <li class="mb-2"><small>📦 <strong>Temps de preparacio estimat:</strong> {{ product.preparationDays }} dies</small></li>
+        <li class="mb-2"><small>📦 <strong>Temps d'enviament estimat:</strong> {{ product.shippingDays }} dies</small></li>
     </ul>
 
     {% include 'catalog/components/_add_to_cart.html.twig' %}

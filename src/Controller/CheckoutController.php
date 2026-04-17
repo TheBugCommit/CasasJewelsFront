@@ -25,28 +25,41 @@ class CheckoutController extends AbstractController
     {
         $summary = $this->getCartSummary->execute();
 
-        if (empty($summary['items'])) {
+        if (empty($summary->items)) {
             return $this->redirectToRoute('frontend_catalog');
         }
 
         return $this->render('checkout/index.html.twig', [
-            'total' => $summary['total'],
+            'total' => $summary->getTotal(),
         ]);
     }
 
     #[Route('/process', name: 'frontend_checkout_process', methods: ['POST'])]
     public function process(Request $request): Response
     {
-        $clientName = $request->request->get('clientName');
-        $clientEmail = $request->request->get('clientEmail');
+        $clientName  = trim($request->request->getString('clientName'));
+        $clientEmail = trim($request->request->getString('clientEmail'));
 
-        try {
-            $result = $this->processCheckout->execute($clientName, $clientEmail);
-        } catch (CheckoutProcessException $e) {
-            $this->addFlash('error', 'Error en tramitar la comanda: ' . $e->getMessage());
+        if ($clientName === '' || $clientEmail === '') {
+            $this->addFlash('error', 'El nom i el correu electrònic són obligatoris per tramitar la comanda.');
             return $this->redirectToRoute('frontend_checkout_index');
         }
 
-        return $this->redirect($result);
+        if (!filter_var($clientEmail, FILTER_VALIDATE_EMAIL)) {
+            $this->addFlash('error', 'El correu electrònic no té un format vàlid.');
+            return $this->redirectToRoute('frontend_checkout_index');
+        }
+
+        try {
+            $paymentUrl = $this->processCheckout->execute($clientName, $clientEmail);
+        } catch (CheckoutProcessException $e) {
+            $this->addFlash('error', 'Error en tramitar la comanda: ' . $e->getMessage());
+            return $this->redirectToRoute('frontend_checkout_index');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'S\'ha produït un error inesperat. Torna-ho a provar.');
+            return $this->redirectToRoute('frontend_checkout_index');
+        }
+
+        return $this->redirect($paymentUrl);
     }
 }

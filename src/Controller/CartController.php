@@ -25,16 +25,21 @@ class CartController extends AbstractController
         $summary = $this->getCartSummary->execute();
 
         return $this->render('cart/index.html.twig', [
-            'items' => $summary['items'],
-            'total' => $summary['total'],
+            'items' => $summary->items,
+            'total' => $summary->getTotal(),
         ]);
     }
 
     #[Route('/add', name: 'frontend_cart_add', methods: ['POST'])]
     public function add(Request $request): Response
     {
-        $productId = $request->request->get('product_id');
-        $quantity = (int) $request->request->get('quantity', 1);
+        $productId = trim((string) $request->request->get('product_id'));
+        $quantity  = $request->request->getInt('quantity', 1);
+
+        if ($productId === '' || $quantity <= 0) {
+            $this->addFlash('error', 'Dades invàlides en afegir el producte.');
+            return $this->redirectToRoute('frontend_cart_index');
+        }
 
         $this->cartSession->addItem($productId, $quantity);
         $this->addFlash('success', 'Producte afegit al carretó correctament.');
